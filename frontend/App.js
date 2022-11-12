@@ -9,6 +9,8 @@ import {
     Input,
     InputGroup,
     InputLeftElement,
+    VStack,
+    useDisclosure,
 } from '@chakra-ui/react';
 
 import {
@@ -25,6 +27,8 @@ import './assets/global.css';
 
 import Navbar from './components/Navbar';
 import ToiletCard from './components/ToiletCard';
+import ReviewDialog from './components/ReviewDialog';
+
 import allToilets from './assets/toilets.json';
 
 export default function App({ isSignedIn, contractId, wallet }) {
@@ -68,21 +72,43 @@ export default function App({ isSignedIn, contractId, wallet }) {
         return wallet.viewMethod({ method: 'get_greeting', contractId })
     }
 
-    const [search, setSearch] = React.useState("");
+    const [search, setSearch] = React.useState('');
+
     const handleChange = (event) => {
         setSearch(event.target.value);
-        // handle toilet search
+
+        let newToilets = [...toilets];
+        for (let i in allToilets) {
+            if (similar(allToilets[i], event.target.value)) newToilets[i] = 1;
+            else newToilets[i] = 0;
+        }
+
+        console.log(newToilets);
+        setToilets(newToilets);
     }
 
-    const [toilets, setToilets] = React.useState(allToilets);
+    function similar(toilet, search) {
+        if (search === '') return true;
+        let combinedString = (toilet.name + ' ' + toilet.address + ' ' + toilet.postcode).toLowerCase();
+        if (combinedString.includes(search.toLowerCase())) return true;
+        return false;
+    }
+
+    const [toilets, setToilets] = React.useState([...Array(allToilets.length)].map(_ => 1));
+    const [index, setIndex] = React.useState(0);
+    const [rating, setRating] = React.useState([...Array(allToilets.length)].map(_ => 3.5))
+
+    const { isOpen, onOpen, onClose } = useDisclosure();
+
 
     return (
         <>
+            <ReviewDialog toilet={allToilets[index]} isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
             <Navbar signOut = {() => wallet.signOut()} accountId={wallet.accountId} />
             <Box>
                 <SlideFade in>
                     <Box display='flex' flexDir='column' alignItems='center'>
-                        <Heading size='lg' mb='30px'>Search for your favourite toilet</Heading>
+                        <Heading size='lg' mb='30px' fontWeight={600}>Search for your favourite toilet!</Heading>
                         <InputGroup w='40%' minW='400px'>
                             <InputLeftElement
                                 pointerEvents='none'
@@ -91,16 +117,25 @@ export default function App({ isSignedIn, contractId, wallet }) {
                             <Input 
                                 value={search}
                                 onChange={handleChange}
-                                placeholder='Search for the building, postcode, address or ID...' 
+                                placeholder='Search for the building, postcode, or address...' 
                             />
 
                         </InputGroup>
-
-                        {
-                            toilets.map(toilet => (
-                                <ToiletCard toilet={toilet} />
-                            ))
-                        }
+                        <VStack spacing='20px' mt='30px' w='100%'>
+                            {
+                                allToilets.map((toilet, i) => (
+                                    toilets[i] === 1 && 
+                                        <ToiletCard 
+                                            key={i} 
+                                            toilet={toilet} 
+                                            show={toilets[i]} 
+                                            rating={rating[i]}
+                                            onClick={onOpen}
+                                        />
+                                ))
+                            }
+                        </VStack>
+                        
                     </Box>
                 </SlideFade>
                 
