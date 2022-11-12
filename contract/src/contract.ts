@@ -2,7 +2,7 @@ import { NearBindgen, near, call, view } from 'near-sdk-js'
 import { PostedReview } from './model'
 
 @NearBindgen({})
-class GuestBook {
+class RateAndReview {
   reviews: PostedReview[] = [];
   @call({})
   add_review({  id, text, rate, date }: { id: string, text: string , rate: number, date: string }) {
