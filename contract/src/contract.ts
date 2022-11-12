@@ -1,18 +1,19 @@
-// Find all our documentation at https://docs.near.org
-import { NearBindgen, near, call, view } from 'near-sdk-js';
+import { NearBindgen, near, call, view } from 'near-sdk-js'
+import { POINT_ONE, PostedMessage } from './model'
 
 @NearBindgen({})
-class HelloNear {
-  message: string = "Hello";
-
-  @view({}) // This method is read-only and can be called for free
-  get_greeting(): string {
-    return this.message;
+class GuestBook {
+  messages: PostedMessage[] = [];
+  @call({})
+  add_message({  text, rate }: { text: string , rate: number }) {
+    // If the user attaches more than 0.01N the message is premium
+    // const premium = near.attachedDeposit() >= BigInt(POINT_ONE);
+    const message = new PostedMessage({ text, rate });
+    this.messages.push(message);
   }
 
-  @call({}) // This method changes the state, for which it cost gas
-  set_greeting({ message }: { message: string }): void {
-    near.log(`Saving greeting ${message}`);
-    this.message = message;
+  @view({})
+  get_messages({ from_index = 0, limit = 10 }: { from_index: number, limit: number }): PostedMessage[] {
+    return this.messages.slice(from_index, from_index + limit);
   }
 }
