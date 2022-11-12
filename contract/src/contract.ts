@@ -5,8 +5,8 @@ import { PostedReview } from './model'
 class GuestBook {
   reviews: PostedReview[] = [];
   @call({})
-  add_review({  id, text, rate }: { id: string, text: string , rate: number }) {
-    const review = new PostedReview({ id, text, rate });
+  add_review({  id, text, rate, date }: { id: string, text: string , rate: number, date: string }) {
+    const review = new PostedReview({ id, text, rate, date });
     this.reviews.push(review);
   }
 
