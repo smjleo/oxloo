@@ -6,12 +6,9 @@ export class PostedReview {
     date: string;
 
     constructor({ id, text, rate, date }: PostedReview) {
-    // this.premium = premium;
-    // this.rate = rate;
-    this.id = id;
-    this.text = text;
-    this.rate = rate;
-    this.date = date;
+        this.id = id;
+        this.text = text;
+        this.rate = rate;
+        this.date = date;
     }
-    
 }

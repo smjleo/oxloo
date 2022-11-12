@@ -29,7 +29,7 @@ export default function ToiletCard({ toilet, show, rating, onClick }) {
                 <Heading mt={1} fontSize='15px' fontWeight={500}>{toilet.address}</Heading>
                 <Heading fontSize='15px' fontWeight={500}>{toilet.postcode}</Heading>
 
-                <Rating style={{marginTop: 15}} readOnly precision={0.5} defaultValue={rating}/>
+                <Rating style={{marginTop: 15}} readOnly  precision={0.5} value={rating}/>
             </Box>
         </SlideFade>
         // TODO: https://www.producthunt.com/products/chakra-ui/reviews

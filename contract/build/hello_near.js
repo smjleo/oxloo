@@ -408,6 +408,23 @@ var DataLength;
 const U64_MAX = 2n ** 64n - 1n;
 const EVICTED_REGISTER = U64_MAX - 1n;
 /**
+ * Logs parameters in the NEAR WASM virtual machine.
+ *
+ * @param params - Parameters to log.
+ */
+function log(...params) {
+  env.log(params.reduce((accumulated, parameter, index) => {
+    // Stringify undefined
+    const param = parameter === undefined ? "undefined" : parameter;
+    // Convert Objects to strings and convert to string
+    const stringified = typeof param === "object" ? JSON.stringify(param) : `${param}`;
+    if (index === 0) {
+      return stringified;
+    }
+    return `${accumulated} ${stringified}`;
+  }, ""));
+}
+/**
  * Returns the account ID of the account that called the function.
  * Can only be called in a call or initialize function.
  */
@@ -542,8 +559,6 @@ class PostedReview {
     rate,
     date
   }) {
-    // this.premium = premium;
-    // this.rate = rate;
     this.id = id;
     this.text = text;
     this.rate = rate;
@@ -552,8 +567,29 @@ class PostedReview {
 }
 
 var _dec, _dec2, _dec3, _dec4, _dec5, _class, _class2;
-let RateAndReview = (_dec = NearBindgen({}), _dec2 = call({}), _dec3 = view(), _dec4 = view(), _dec5 = view(), _dec(_class = (_class2 = class RateAndReview {
-  reviews = [];
+let RateAndReview = (_dec = NearBindgen({}), _dec2 = view(), _dec3 = call({}), _dec4 = view(), _dec5 = view(), _dec(_class = (_class2 = class RateAndReview {
+  reviews = [new PostedReview({
+    id: 'cs',
+    text: 'test',
+    rate: 5,
+    date: 'aeouaeou'
+  })];
+  get_average_rating({
+    id
+  }) {
+    log(id);
+    log(this.reviews);
+    log(this);
+    let sum = 0;
+    let cnt = 0;
+    for (let review of this.reviews) {
+      if (review.id == id) {
+        sum = sum + review.rate;
+        cnt++;
+      }
+    }
+    if (cnt == 0) return 0;else return sum / cnt;
+  }
   add_review({
     id,
     text,
@@ -568,48 +604,20 @@ let RateAndReview = (_dec = NearBindgen({}), _dec2 = call({}), _dec3 = view(), _
     });
     this.reviews.push(review);
   }
-  get_reviews({
-    from_index = 0,
-    limit = this.reviews.length
-  }) {
+  get_reviews() {
     return this.reviews.slice();
   }
   get_reviews_by_id({
     id
   }) {
+    log(this.reviews);
     let filtered = [];
-    for (let i = 0; i < this.reviews.length; i++) {
-      if (this.reviews[i].id == id) filtered.push(this.reviews[i]);
+    for (let review of this.reviews) {
+      if (review.id == id) filtered.push(review);
     }
-    return filtered.slice();
+    return filtered;
   }
-  get_average_rating({
-    id
-  }) {
-    let sum = 0;
-    let cnt = 0;
-    for (let i = 0; i < this.reviews.length; i++) {
-      if (this.reviews[i].id == id) {
-        sum = sum + this.reviews[i].rate;
-        cnt++;
-      }
-    }
-    if (cnt == 0) return 0;else return sum / cnt;
-  }
-}, (_applyDecoratedDescriptor(_class2.prototype, "add_review", [_dec2], Object.getOwnPropertyDescriptor(_class2.prototype, "add_review"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "get_reviews", [_dec3], Object.getOwnPropertyDescriptor(_class2.prototype, "get_reviews"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "get_reviews_by_id", [_dec4], Object.getOwnPropertyDescriptor(_class2.prototype, "get_reviews_by_id"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "get_average_rating", [_dec5], Object.getOwnPropertyDescriptor(_class2.prototype, "get_average_rating"), _class2.prototype)), _class2)) || _class);
-function get_average_rating() {
-  const _state = RateAndReview._getState();
-  if (!_state && RateAndReview._requireInit()) {
-    throw new Error("Contract must be initialized");
-  }
-  const _contract = RateAndReview._create();
-  if (_state) {
-    RateAndReview._reconstruct(_contract, _state);
-  }
-  const _args = RateAndReview._getArgs();
-  const _result = _contract.get_average_rating(_args);
-  if (_result !== undefined) if (_result && _result.constructor && _result.constructor.name === "NearPromise") _result.onReturn();else env.value_return(RateAndReview._serialize(_result, true));
-}
+}, (_applyDecoratedDescriptor(_class2.prototype, "get_average_rating", [_dec2], Object.getOwnPropertyDescriptor(_class2.prototype, "get_average_rating"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "add_review", [_dec3], Object.getOwnPropertyDescriptor(_class2.prototype, "add_review"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "get_reviews", [_dec4], Object.getOwnPropertyDescriptor(_class2.prototype, "get_reviews"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "get_reviews_by_id", [_dec5], Object.getOwnPropertyDescriptor(_class2.prototype, "get_reviews_by_id"), _class2.prototype)), _class2)) || _class);
 function get_reviews_by_id() {
   const _state = RateAndReview._getState();
   if (!_state && RateAndReview._requireInit()) {
@@ -648,6 +656,19 @@ function add_review() {
   const _args = RateAndReview._getArgs();
   const _result = _contract.add_review(_args);
   RateAndReview._saveToStorage(_contract);
+  if (_result !== undefined) if (_result && _result.constructor && _result.constructor.name === "NearPromise") _result.onReturn();else env.value_return(RateAndReview._serialize(_result, true));
+}
+function get_average_rating() {
+  const _state = RateAndReview._getState();
+  if (!_state && RateAndReview._requireInit()) {
+    throw new Error("Contract must be initialized");
+  }
+  const _contract = RateAndReview._create();
+  if (_state) {
+    RateAndReview._reconstruct(_contract, _state);
+  }
+  const _args = RateAndReview._getArgs();
+  const _result = _contract.get_average_rating(_args);
   if (_result !== undefined) if (_result && _result.constructor && _result.constructor.name === "NearPromise") _result.onReturn();else env.value_return(RateAndReview._serialize(_result, true));
 }
 

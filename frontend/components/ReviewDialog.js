@@ -58,13 +58,13 @@ export default function ReviewDialog( { toilet, isOpen, onOpen, onClose }) {
                                     <StatLabel color='#2C5282'>Average rating</StatLabel>
                                     <StatNumber color='#2C5282'>{average}/5</StatNumber>
                                 </Stat>
-                                <Rating readOnly precision={0.5} defaultValue={average} size='small' />
+                                <Rating readOnly precision={0.5} value={average} size='small' />
                             </Box>
                             <Box ml={7} >
                                 {
                                     [5, 4, 3, 2, 1].map(e => (
                                         <Box display='flex' height={6} alignItems='center'>
-                                            <Rating readOnly defaultValue={e} size='small' />
+                                            <Rating readOnly value={e} size='small' />
                                             <Progress ml={5} width='300px' value={(ratingCount[e-1] / reviews.length)*100} rounded={4}/>
                                             <Text fontSize='sm' ml={4}>{ratingCount[e-1]} review{ratingCount[e-1] !== 1 && 's'}</Text>
                                         </Box>
