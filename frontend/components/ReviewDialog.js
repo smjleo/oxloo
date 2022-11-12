@@ -50,6 +50,7 @@ export default function ReviewDialog( { toilet, isOpen, onOpen, onClose }) {
                 <ModalOverlay />
                 <ModalContent>
                     <ModalHeader>{toilet.name}</ModalHeader>
+                    <ModalCloseButton />
                     <Box px={6}>
                         <Box display='flex'>
                             <Box p={3} bgColor='#BEE3F8' rounded='md' width='150px'>
@@ -88,13 +89,9 @@ export default function ReviewDialog( { toilet, isOpen, onOpen, onClose }) {
                             </VStack>
                         </Box>
                     </Box>
-                    
-
+                
                     <ModalFooter>
-                        <Button colorScheme='blue' mr={3} onClick={onClose}>
-                            Close
-                        </Button>
-                        <Button variant='ghost'>Secondary Action</Button>
+
                     </ModalFooter>
                 </ModalContent>
             </Modal>

@@ -408,23 +408,6 @@ var DataLength;
 const U64_MAX = 2n ** 64n - 1n;
 const EVICTED_REGISTER = U64_MAX - 1n;
 /**
- * Logs parameters in the NEAR WASM virtual machine.
- *
- * @param params - Parameters to log.
- */
-function log(...params) {
-  env.log(params.reduce((accumulated, parameter, index) => {
-    // Stringify undefined
-    const param = parameter === undefined ? "undefined" : parameter;
-    // Convert Objects to strings and convert to string
-    const stringified = typeof param === "object" ? JSON.stringify(param) : `${param}`;
-    if (index === 0) {
-      return stringified;
-    }
-    return `${accumulated} ${stringified}`;
-  }, ""));
-}
-/**
  * Returns the account ID of the account that called the function.
  * Can only be called in a call or initialize function.
  */
@@ -550,48 +533,123 @@ function NearBindgen({
   };
 }
 
-var _dec, _dec2, _dec3, _class, _class2;
-let HelloNear = (_dec = NearBindgen({}), _dec2 = view(), _dec3 = call({}), _dec(_class = (_class2 = class HelloNear {
-  message = "Hello";
-  // This method is read-only and can be called for free
-  get_greeting() {
-    return this.message;
-  }
-  // This method changes the state, for which it cost gas
-  set_greeting({
-    message
+class PostedReview {
+  //   premium: boolean;
+
+  constructor({
+    id,
+    text,
+    rate,
+    date
   }) {
-    log(`Saving greeting ${message}`);
-    this.message = message;
+    // this.premium = premium;
+    // this.rate = rate;
+    this.id = id;
+    this.text = text;
+    this.rate = rate;
+    this.date = date;
   }
-}, (_applyDecoratedDescriptor(_class2.prototype, "get_greeting", [_dec2], Object.getOwnPropertyDescriptor(_class2.prototype, "get_greeting"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "set_greeting", [_dec3], Object.getOwnPropertyDescriptor(_class2.prototype, "set_greeting"), _class2.prototype)), _class2)) || _class);
-function set_greeting() {
-  const _state = HelloNear._getState();
-  if (!_state && HelloNear._requireInit()) {
-    throw new Error("Contract must be initialized");
-  }
-  const _contract = HelloNear._create();
-  if (_state) {
-    HelloNear._reconstruct(_contract, _state);
-  }
-  const _args = HelloNear._getArgs();
-  const _result = _contract.set_greeting(_args);
-  HelloNear._saveToStorage(_contract);
-  if (_result !== undefined) if (_result && _result.constructor && _result.constructor.name === "NearPromise") _result.onReturn();else env.value_return(HelloNear._serialize(_result, true));
-}
-function get_greeting() {
-  const _state = HelloNear._getState();
-  if (!_state && HelloNear._requireInit()) {
-    throw new Error("Contract must be initialized");
-  }
-  const _contract = HelloNear._create();
-  if (_state) {
-    HelloNear._reconstruct(_contract, _state);
-  }
-  const _args = HelloNear._getArgs();
-  const _result = _contract.get_greeting(_args);
-  if (_result !== undefined) if (_result && _result.constructor && _result.constructor.name === "NearPromise") _result.onReturn();else env.value_return(HelloNear._serialize(_result, true));
 }
 
-export { get_greeting, set_greeting };
+var _dec, _dec2, _dec3, _dec4, _dec5, _class, _class2;
+let RateAndReview = (_dec = NearBindgen({}), _dec2 = call({}), _dec3 = view(), _dec4 = view(), _dec5 = view(), _dec(_class = (_class2 = class RateAndReview {
+  reviews = [];
+  add_review({
+    id,
+    text,
+    rate,
+    date
+  }) {
+    const review = new PostedReview({
+      id,
+      text,
+      rate,
+      date
+    });
+    this.reviews.push(review);
+  }
+  get_reviews({
+    from_index = 0,
+    limit = this.reviews.length
+  }) {
+    return this.reviews.slice();
+  }
+  get_reviews_by_id({
+    id
+  }) {
+    let filtered = [];
+    for (let i = 0; i < this.reviews.length; i++) {
+      if (this.reviews[i].id == id) filtered.push(this.reviews[i]);
+    }
+    return filtered.slice();
+  }
+  get_average_rating({
+    id
+  }) {
+    let sum = 0;
+    let cnt = 0;
+    for (let i = 0; i < this.reviews.length; i++) {
+      if (this.reviews[i].id == id) {
+        sum = sum + this.reviews[i].rate;
+        cnt++;
+      }
+    }
+    if (cnt == 0) return 0;else return sum / cnt;
+  }
+}, (_applyDecoratedDescriptor(_class2.prototype, "add_review", [_dec2], Object.getOwnPropertyDescriptor(_class2.prototype, "add_review"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "get_reviews", [_dec3], Object.getOwnPropertyDescriptor(_class2.prototype, "get_reviews"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "get_reviews_by_id", [_dec4], Object.getOwnPropertyDescriptor(_class2.prototype, "get_reviews_by_id"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "get_average_rating", [_dec5], Object.getOwnPropertyDescriptor(_class2.prototype, "get_average_rating"), _class2.prototype)), _class2)) || _class);
+function get_average_rating() {
+  const _state = RateAndReview._getState();
+  if (!_state && RateAndReview._requireInit()) {
+    throw new Error("Contract must be initialized");
+  }
+  const _contract = RateAndReview._create();
+  if (_state) {
+    RateAndReview._reconstruct(_contract, _state);
+  }
+  const _args = RateAndReview._getArgs();
+  const _result = _contract.get_average_rating(_args);
+  if (_result !== undefined) if (_result && _result.constructor && _result.constructor.name === "NearPromise") _result.onReturn();else env.value_return(RateAndReview._serialize(_result, true));
+}
+function get_reviews_by_id() {
+  const _state = RateAndReview._getState();
+  if (!_state && RateAndReview._requireInit()) {
+    throw new Error("Contract must be initialized");
+  }
+  const _contract = RateAndReview._create();
+  if (_state) {
+    RateAndReview._reconstruct(_contract, _state);
+  }
+  const _args = RateAndReview._getArgs();
+  const _result = _contract.get_reviews_by_id(_args);
+  if (_result !== undefined) if (_result && _result.constructor && _result.constructor.name === "NearPromise") _result.onReturn();else env.value_return(RateAndReview._serialize(_result, true));
+}
+function get_reviews() {
+  const _state = RateAndReview._getState();
+  if (!_state && RateAndReview._requireInit()) {
+    throw new Error("Contract must be initialized");
+  }
+  const _contract = RateAndReview._create();
+  if (_state) {
+    RateAndReview._reconstruct(_contract, _state);
+  }
+  const _args = RateAndReview._getArgs();
+  const _result = _contract.get_reviews(_args);
+  if (_result !== undefined) if (_result && _result.constructor && _result.constructor.name === "NearPromise") _result.onReturn();else env.value_return(RateAndReview._serialize(_result, true));
+}
+function add_review() {
+  const _state = RateAndReview._getState();
+  if (!_state && RateAndReview._requireInit()) {
+    throw new Error("Contract must be initialized");
+  }
+  const _contract = RateAndReview._create();
+  if (_state) {
+    RateAndReview._reconstruct(_contract, _state);
+  }
+  const _args = RateAndReview._getArgs();
+  const _result = _contract.add_review(_args);
+  RateAndReview._saveToStorage(_contract);
+  if (_result !== undefined) if (_result && _result.constructor && _result.constructor.name === "NearPromise") _result.onReturn();else env.value_return(RateAndReview._serialize(_result, true));
+}
+
+export { add_review, get_average_rating, get_reviews, get_reviews_by_id };
 //# sourceMappingURL=hello_near.js.map

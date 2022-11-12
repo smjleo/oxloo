@@ -32,44 +32,10 @@ import ReviewDialog from './components/ReviewDialog';
 import allToilets from './assets/toilets.json';
 
 export default function App({ isSignedIn, contractId, wallet }) {
-    const [valueFromBlockchain, setValueFromBlockchain] = React.useState();
-
-    const [uiPleaseWait, setUiPleaseWait] = React.useState(true);
-
-    // Get blockchian state once on component load
-    React.useEffect(() => {
-        getGreeting()
-            .then(setValueFromBlockchain)
-            .catch(alert)
-            .finally(() => {
-                setUiPleaseWait(false);
-            });
-    }
-        , []);
-
     /// If user not signed-in with wallet - show prompt
     if (!isSignedIn) {
         // Sign-in flow will reload the page later
-        return <SignInPrompt greeting={valueFromBlockchain} onClick={() => wallet.signIn()} />;
-    }
-
-    function changeGreeting(e) {
-        e.preventDefault();
-        setUiPleaseWait(true);
-        const { greetingInput } = e.target.elements;
-
-        // use the wallet to send the greeting to the contract
-        wallet.callMethod({ method: 'set_greeting', args: { message: greetingInput.value }, contractId })
-            .then(async () => { return getGreeting(); })
-            .then(setValueFromBlockchain)
-            .finally(() => {
-                setUiPleaseWait(false);
-            });
-    }
-
-    function getGreeting() {
-        // use the wallet to query the contract's greeting
-        return wallet.viewMethod({ method: 'get_greeting', contractId })
+        return <SignInPrompt onClick={() => wallet.signIn()} />;
     }
 
     const [search, setSearch] = React.useState('');
@@ -96,7 +62,21 @@ export default function App({ isSignedIn, contractId, wallet }) {
 
     const [toilets, setToilets] = React.useState([...Array(allToilets.length)].map(_ => 1));
     const [index, setIndex] = React.useState(0);
-    const [rating, setRating] = React.useState([...Array(allToilets.length)].map(_ => 3.5))
+    const [rating, setRating] = React.useState([...Array(allToilets.length)].map(_ => 0));
+
+    async function updateRating() {
+        let newRating = [];
+        for (let toilet of allToilets) {
+            const rating = await wallet.viewMethod({ method: 'get_average_rating', args: { id: toilet.id }, contractId });
+            newRating.push(rating);
+        }
+
+        setRating(newRating);
+    }
+
+    React.useEffect(() => {
+        updateRating();
+    },[toilets]);
 
     const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -130,7 +110,7 @@ export default function App({ isSignedIn, contractId, wallet }) {
                                             toilet={toilet} 
                                             show={toilets[i]} 
                                             rating={rating[i]}
-                                            onClick={onOpen}
+                                            onClick={() => {onOpen(); setIndex(i)}}
                                         />
                                 ))
                             }
@@ -140,26 +120,6 @@ export default function App({ isSignedIn, contractId, wallet }) {
                 </SlideFade>
                 
             </Box>
-            <main className={uiPleaseWait ? 'please-wait' : ''}>
-                <h1>
-                    The contract says: <span className="greeting">{valueFromBlockchain}</span>
-                </h1>
-                <form onSubmit={changeGreeting} className="change">
-                    <label>Change greeting:</label>
-                    <div>
-                        <input
-                            autoComplete="off"
-                            defaultValue={valueFromBlockchain}
-                            id="greetingInput"
-                        />
-                        <button>
-                            <span>Save</span>
-                            <div className="loader"></div>
-                        </button>
-                    </div>
-                </form>
-                <EducationalText />
-            </main>
         </>
     );
 }

@@ -14,6 +14,8 @@ class RateAndReview {
   get_reviews({ from_index = 0, limit = this.reviews.length }: { from_index: number, limit: number }): PostedReview[] {
     return this.reviews.slice();
   }
+
+  @view({})
   get_reviews_by_id({id}: {id: string}): PostedReview[] {
     let filtered = [];
     for(let i =0;i<this.reviews.length;i++){
@@ -21,6 +23,8 @@ class RateAndReview {
     }
     return filtered.slice();
   }
+  
+  @view({})
   get_average_rating({id}: {id:string}): number {
     let sum =0;
     let cnt =0;
