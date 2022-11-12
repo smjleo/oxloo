@@ -1,13 +1,18 @@
 export class PostedReview {
 //   premium: boolean;
-  rate: number;
-  text: string;
+    id: string;
+    text: string;
+    rate: number;
+    
+    
 
-  constructor({ text, rate }: PostedReview) {
+
+    constructor({ id, text, rate }: PostedReview) {
     // this.premium = premium;
     // this.rate = rate;
+    this.id = id;
     this.text = text;
     this.rate = rate;
-  }
-  
+    }
+    
 }
