@@ -1,19 +1,17 @@
 import { NearBindgen, near, call, view } from 'near-sdk-js'
-import { POINT_ONE, PostedMessage } from './model'
+import { PostedReview } from './model'
 
 @NearBindgen({})
 class GuestBook {
-  messages: PostedMessage[] = [];
+  reviews: PostedReview[] = [];
   @call({})
-  add_message({  text, rate }: { text: string , rate: number }) {
-    // If the user attaches more than 0.01N the message is premium
-    // const premium = near.attachedDeposit() >= BigInt(POINT_ONE);
-    const message = new PostedMessage({ text, rate });
-    this.messages.push(message);
+  add_review({  text, rate }: { text: string , rate: number }) {
+    const review = new PostedReview({ text, rate });
+    this.reviews.push(review);
   }
 
   @view({})
-  get_messages({ from_index = 0, limit = 10 }: { from_index: number, limit: number }): PostedMessage[] {
-    return this.messages.slice(from_index, from_index + limit);
+  get_reviews({ from_index = 0, limit = 10 }: { from_index: number, limit: number }): PostedReview[] {
+    return this.reviews.slice(from_index, from_index + limit);
   }
 }
