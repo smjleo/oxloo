@@ -1,11 +1,9 @@
-export const POINT_ONE = '100000000000000000000000';
-
-export class PostedMessage {
+export class PostedReview {
 //   premium: boolean;
   rate: number;
   text: string;
 
-  constructor({ text, rate }: PostedMessage) {
+  constructor({ text, rate }: PostedReview) {
     // this.premium = premium;
     // this.rate = rate;
     this.text = text;
