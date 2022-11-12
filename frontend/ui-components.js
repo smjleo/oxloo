@@ -1,40 +1,58 @@
 import React from 'react';
 import {
     Box, 
-    Heading, 
+    Heading,
+    Text, 
+    Button,
+    SlideFade,
+    Stat,
+    StatLabel,
+    StatNumber,
+    StatHelpText,
+    StatArrow,
+    StatGroup,
 } from '@chakra-ui/react';
+
+import Logo from './components/Logo';
 
 export function SignInPrompt({ greeting, onClick }) {
     return (
-        <Box>
-            <h3>
-                Welcome to NEAR!
-            </h3>
-            <p>
-                Your contract is storing a greeting message in the NEAR blockchain. To
-                change it you need to sign in using the NEAR Wallet. It is very simple,
-                just use the button below.
-            </p>
-            <p>
-                Do not worry, this app runs in the test network ("testnet"). It works
-                just like the main network ("mainnet"), but using NEAR Tokens that are
-                only for testing!
-            </p>
-            <br />
-            <h1>Heading</h1>
-            <Heading>Test</Heading>
-            <p style={{ textAlign: 'center' }}>
-                <button onClick={onClick}>Sign in with NEAR Wallet</button>
-            </p>
-        </Box>
+        <SlideFade in>
+            <Box h='100vh' w='100vw' display='flex' justifyContent='center' >
+                <Box w='50vw' mt={20}>
+                    <Logo />
+                    <Text fontSize='sm' fontWeight={500}>
+                        Democratising Oxford's toilets.
+                    </Text>
+
+                    <Heading size='xl' fontWeight={900} mt={4}>Welcome!</Heading>
+
+                    
+
+                    <Text mt={2}>
+                        Please log in with your NEAR Wallet to view, create or vote on toilet reviews.
+                    </Text>
+                    <Button onClick={onClick} colorScheme='blue' size='sm' mt='30px'>Sign in with NEAR Wallet</Button>
+
+                    <Stat mt={8}>
+                        <StatLabel>Registered users</StatLabel>
+                        <StatNumber>2</StatNumber>
+                        <StatHelpText>
+                            <StatArrow type='increase' />
+                            200% (today)
+                        </StatHelpText>
+                    </Stat>
+                </Box>
+            </Box>
+        </SlideFade>
     );
 }
 
 export function SignOutButton({ accountId, onClick }) {
     return (
-        <button style={{ float: 'right' }} onClick={onClick}>
+        <Button style={{ float: 'right' }} onClick={onClick}>
             Sign out {accountId}
-        </button>
+        </Button>
     );
 }
 

@@ -1,10 +1,31 @@
 import 'regenerator-runtime/runtime';
 import React from 'react';
 
+import {
+    Box,
+    Heading,
+    Text,
+    SlideFade,
+    Input,
+    InputGroup,
+    InputLeftElement,
+} from '@chakra-ui/react';
+
+import {
+    SearchIcon
+} from '@chakra-ui/icons';
+
+import { 
+    EducationalText, 
+    SignInPrompt, 
+    SignOutButton 
+} from './ui-components';
+
 import './assets/global.css';
 
-import { EducationalText, SignInPrompt, SignOutButton } from './ui-components';
-
+import Navbar from './components/Navbar';
+import ToiletCard from './components/ToiletCard';
+import allToilets from './assets/toilets.json';
 
 export default function App({ isSignedIn, contractId, wallet }) {
     const [valueFromBlockchain, setValueFromBlockchain] = React.useState();
@@ -47,9 +68,43 @@ export default function App({ isSignedIn, contractId, wallet }) {
         return wallet.viewMethod({ method: 'get_greeting', contractId })
     }
 
+    const [search, setSearch] = React.useState("");
+    const handleChange = (event) => {
+        setSearch(event.target.value);
+        // handle toilet search
+    }
+
+    const [toilets, setToilets] = React.useState(allToilets);
+
     return (
         <>
-            <SignOutButton accountId={wallet.accountId} onClick={() => wallet.signOut()} />
+            <Navbar signOut = {() => wallet.signOut()} accountId={wallet.accountId} />
+            <Box>
+                <SlideFade in>
+                    <Box display='flex' flexDir='column' alignItems='center'>
+                        <Heading size='lg' mb='30px'>Search for your favourite toilet</Heading>
+                        <InputGroup w='40%' minW='400px'>
+                            <InputLeftElement
+                                pointerEvents='none'
+                                children={<SearchIcon />}
+                            />
+                            <Input 
+                                value={search}
+                                onChange={handleChange}
+                                placeholder='Search for the building, postcode, address or ID...' 
+                            />
+
+                        </InputGroup>
+
+                        {
+                            toilets.map(toilet => (
+                                <ToiletCard toilet={toilet} />
+                            ))
+                        }
+                    </Box>
+                </SlideFade>
+                
+            </Box>
             <main className={uiPleaseWait ? 'please-wait' : ''}>
                 <h1>
                     The contract says: <span className="greeting">{valueFromBlockchain}</span>

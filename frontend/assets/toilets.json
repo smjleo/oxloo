@@ -1,0 +1,38 @@
+[
+    {
+        "id": "maths",
+        "name": "Mathematical Institute, Andrew Wiles Building",
+        "postcode": "OX2 6GG",
+        "address": "Andrew Wiles Building, Woodstock Rd, Oxford"
+    },
+    {
+        "id": "cs",
+        "name": "Department of Computer Science, Wolfson Building",
+        "postcode": "OX1 3QG", 
+        "address": "7 Parks Rd, Oxford"
+    },
+    {
+        "id": "eng",
+        "name": "Department of Engineering Science, Thom Building",
+        "postcode": "OX1 3PJ",
+        "address": "Department of Engineering Science, Parks Rd, Oxford"
+    },
+    {
+        "id": "radcam",
+        "name": "Radcliffe Camera",
+        "postcode": "OX1 3BG",
+        "address": "Radcliffe Sq, Oxford"
+    },
+    {
+        "id": "westgate",
+        "name": "Westgate Oxford",
+        "postcode": "OX1 1TR",
+        "address": "Queen St, Oxford"
+    },
+    {
+        "id": "law",
+        "name": "Faculty of Law, St Cross Building",
+        "postcode": "OX1 3UL",
+        "address": "St Cross Rd, Oxford"
+    }
+]
