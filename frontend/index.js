@@ -1,7 +1,8 @@
 // React
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import App from './App';
+import { ChakraProvider } from '@chakra-ui/react';
 
 // NEAR
 import { Wallet } from './near-wallet';
@@ -16,8 +17,11 @@ const wallet = new Wallet({ createAccessKeyFor: CONTRACT_ADDRESS })
 window.onload = async () => {
   const isSignedIn = await wallet.startUp()
  
-  ReactDOM.render(
-    <App isSignedIn={isSignedIn} contractId={CONTRACT_ADDRESS} wallet={wallet} />,
-    document.getElementById('root')
+  const root = ReactDOM.createRoot(document.getElementById('root'));
+
+  root.render(
+    <ChakraProvider>
+      <App isSignedIn={isSignedIn} contractId={CONTRACT_ADDRESS} wallet={wallet} />
+    </ChakraProvider>,
   );
 }
