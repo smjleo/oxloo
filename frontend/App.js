@@ -11,6 +11,7 @@ import {
     InputLeftElement,
     VStack,
     useDisclosure,
+    Button,
 } from '@chakra-ui/react';
 
 import {
@@ -81,11 +82,27 @@ export default function App({ isSignedIn, contractId, wallet }) {
         updateRating();
     },[toilets]);
 
-    const { isOpen, onOpen, onClose } = useDisclosure();
+    React.useEffect(() => {
+        updateRating();
+        printReviews();
+    }, [])
 
+    async function printReviews() {
+        console.log('hi?????');
+        let reviews = await wallet.viewMethod({ contractId, method: 'get_reviews' });
+        console.log(reviews);
+    }
+
+    async function clearReviews() {
+        await wallet.callMethod({ contractId, method: 'clear_reviews' });
+    }
+
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const [debug, setDebug] = React.useState(false);
 
     return (
         <>
+            {debug && <Button onClick={clearReviews}>clear reviews lol</Button>}
             <ReviewDialog toilet={allToilets[index]} isOpen={isOpen} onOpen={onOpen} onClose={onClose} wallet={wallet} contractId={contractId} />
             <Navbar signOut = {() => wallet.signOut()} accountId={wallet.accountId} />
             <Box>

@@ -3,7 +3,7 @@ import { PostedReview } from './model'
 
 @NearBindgen({})
 class RateAndReview {
-    reviews = [new PostedReview({ id: 'cs', text: 'test', rate: 5, date: 'aeouaeou' })];
+    reviews = [];
 
     @view({})
     get_average_rating({ id }: { id: string }): number {
@@ -14,25 +14,31 @@ class RateAndReview {
         let sum = 0;
         let cnt = 0;
         for (let review of this.reviews) {
-            if (review.id == id) {
-                sum = sum + review.rate;
+            if (review.id === id) {
+                sum += review.rate;
                 cnt++;
             }
         }
-        if (cnt == 0) return 0;
+        if (cnt === 0) return 0;
         else return sum / cnt
 
     }
 
-    @call({})
+    @call({ payableFunction: true })
     add_review({ id, text, rate, date }: { id: string, text: string, rate: number, date: string }) {
+        near.log(this.reviews);
         const review = new PostedReview({ id, text, rate, date });
         this.reviews.push(review);
     }
 
+    @call({})
+    clear_reviews() {
+        this.reviews = [];
+    }
+
     @view({})
     get_reviews(): PostedReview[] {
-        return this.reviews.slice();
+        return this.reviews;
     }
 
     @view({})
@@ -40,7 +46,7 @@ class RateAndReview {
         near.log(this.reviews);
         let filtered = [];
         for (let review of this.reviews) {
-            if (review.id == id) filtered.push(review);
+            if (review.id === id) filtered.push(review);
         }
         return filtered;
     }

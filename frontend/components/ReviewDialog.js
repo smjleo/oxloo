@@ -90,7 +90,7 @@ export default function ReviewDialog( {toilet, isOpen, onOpen, onClose, wallet, 
                         <Box mt={8}>
                             <Heading size='sm' fontWeight={600} mb={2}>Leave a review</Heading>
                             <Box display='flex' alignItems='center'>
-                                <Rating value={rating} onChange={e => setRating(e.target.value)} />
+                                <Rating value={rating} onChange={e => setRating(parseInt(e.target.value))} />
                                 <Input ml={4} size='sm' rounded={6} value={reviewText} onChange={e => setReviewText(e.target.value)} />
                                 <Button size='sm' ml={4} fontWeight={600} isLoading={loading} onClick={submitReview} >Submit</Button>
                             </Box>
