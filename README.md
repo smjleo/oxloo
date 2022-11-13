@@ -6,7 +6,7 @@ Built for [Oxford Hack 2022](https://oxfordhack22.co.uk/).
 
 - [Inspiration](https://github.com/smjleo/oxloo#inspiration)
 - [What it does](https://github.com/smjleo/oxloo#what-it-does)
-- [Getting Started](https://github.com/plamorg/ghcoin#getting-started)
+- [Getting Started](https://github.com/smjleo/oxloo#getting-started)
 
 ## Inspiration
 
