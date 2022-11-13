@@ -1,37 +1,49 @@
 import { NearBindgen, near, call, view } from 'near-sdk-js'
-import { POINT_ONE, PostedMessage } from './model'
+import { PostedReview } from './model'
 
 @NearBindgen({})
-class GuestBook {
-    reviews: PostedMessage[] = [];
+class RateAndReview {
+    reviews = [new PostedReview({ id: 'cs', text: 'test', rate: 5, date: 'aeouaeou' })];
 
-    @call({ payableFunction: true })
-    add_review({ id, date, rating, text }: { id: string, date: string, rating: number, text: string }) {
-        /*
-        // If the user attaches more than 0.01N the message is premium
-        const premium = near.attachedDeposit() >= BigInt(POINT_ONE);
-        const sender = near.predecessorAccountId();
-        */
+    @view({})
+    get_average_rating({ id }: { id: string }): number {
+        near.log(id);
+        near.log(this.reviews);
+        near.log(this);
 
-        const review = new PostedMessage({ id, date, rating, text });
+        let sum = 0;
+        let cnt = 0;
+        for (let review of this.reviews) {
+            if (review.id == id) {
+                sum = sum + review.rate;
+                cnt++;
+            }
+        }
+        if (cnt == 0) return 0;
+        else return sum / cnt
+
+    }
+
+    @call({})
+    add_review({ id, text, rate, date }: { id: string, text: string, rate: number, date: string }) {
+        const review = new PostedReview({ id, text, rate, date });
         this.reviews.push(review);
     }
 
     @view({})
-    get_reviews(): PostedMessage[] {
-        return this.reviews;
+    get_reviews(): PostedReview[] {
+        return this.reviews.slice();
     }
 
     @view({})
-    get_average_rating({ id } : { id: string }) {
-        let sum = 0, cnt = 0;
+    get_reviews_by_id({ id }: { id: string }): PostedReview[] {
+        near.log(this.reviews);
+        let filtered = [];
         for (let review of this.reviews) {
-            if (review.id !== id) continue;
-            sum += review.rating;
-            cnt++;
+            if (review.id == id) filtered.push(review);
         }
-
-        if (cnt === 0) return 0;
-        else return sum / cnt;
+        return filtered;
     }
+
+
 }

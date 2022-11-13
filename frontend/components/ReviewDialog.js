@@ -18,31 +18,46 @@ import {
     Input,
     VStack,
 } from '@chakra-ui/react';
-import Rating, { ratingClasses } from '@mui/material/Rating';
+import Rating from '@mui/material/Rating';
 import ReviewCard from './ReviewCard';
 
 
-export default function ReviewDialog( { toilet, isOpen, onOpen, onClose }) {
-    const [reviews, setReviews] = React.useState([
-        {
-            text: "Irure minim eu nulla sint dolore aliquip veniam aliquip sunt tempor esse nisi. Excepteur nisi reprehenderit minim ex id consequat labore qui Lorem et. Nisi enim quis incididunt irure pariatur pariatur anim aliqua duis. Aute est labore dolor ex. Adipisicing dolore cupidatat consequat fugiat amet. Deserunt eiusmod sit sunt ut cillum et labore nisi et exercitation.",
-            date: "19:04, Sat 12 Nov 2022",
-            rate: 5
-        },
-       
-    ]);
+export default function ReviewDialog( {toilet, isOpen, onOpen, onClose, wallet, contractId }) {
+    async function getReviews() {  
+        let newReviews = await wallet.viewMethod( {contractId, method: 'get_reviews_by_id', args: { id: toilet.id }});
+        setReviews(newReviews);
+    }
+
+    const [reviews, setReviews] = React.useState([]);
+
+    React.useEffect(() => {
+        getReviews();
+        setRating(0);
+        setReviewText("");
+        setLoading(false);
+    }, [isOpen]);
 
     const [average, setAverage] = React.useState(0);
     const [ratingCount, setRatingCount] = React.useState([0, 0, 0, 0, 0]);
 
     React.useEffect(() => {
         let sum = reviews.reduce((prev, review) => prev + review.rate, 0);
-        setAverage(Number((sum / reviews.length).toFixed(1)));
+        setAverage(reviews.length !== 0 ? Number((sum / reviews.length).toFixed(1)) : 0);
 
         let newCount = reviews.reduce((prev, review) => [0, 1, 2, 3, 4].map(i => prev[i] + (review.rate === (i+1))), [0, 0, 0, 0, 0]);
         console.log(newCount);
         setRatingCount(newCount);
     }, [reviews]);
+
+    const [rating, setRating] = React.useState(0);
+    const [reviewText, setReviewText] = React.useState("");
+    const [loading, setLoading] = React.useState(false);
+
+    async function submitReview() {
+        setLoading(true);
+        await wallet.callMethod({ method: 'add_review', contractId, args: { id: toilet.id, text: reviewText, rate: rating, date: new Date().toLocaleString() }});
+        setLoading(false);
+    }
 
     return (
         <>
@@ -65,7 +80,7 @@ export default function ReviewDialog( { toilet, isOpen, onOpen, onClose }) {
                                     [5, 4, 3, 2, 1].map(e => (
                                         <Box display='flex' height={6} alignItems='center'>
                                             <Rating readOnly value={e} size='small' />
-                                            <Progress ml={5} width='300px' value={(ratingCount[e-1] / reviews.length)*100} rounded={4}/>
+                                            <Progress ml={5} width='300px' value={reviews.length !== 0 ? (ratingCount[e-1] / reviews.length)*100 : 0} rounded={4}/>
                                             <Text fontSize='sm' ml={4}>{ratingCount[e-1]} review{ratingCount[e-1] !== 1 && 's'}</Text>
                                         </Box>
                                     ))
@@ -75,9 +90,9 @@ export default function ReviewDialog( { toilet, isOpen, onOpen, onClose }) {
                         <Box mt={8}>
                             <Heading size='sm' fontWeight={600} mb={2}>Leave a review</Heading>
                             <Box display='flex' alignItems='center'>
-                                <Rating />
-                                <Input ml={4} size='sm' rounded={6} />
-                                <Button size='sm' ml={4} fontWeight={600}>Submit</Button>
+                                <Rating value={rating} onChange={e => setRating(e.target.value)} />
+                                <Input ml={4} size='sm' rounded={6} value={reviewText} onChange={e => setReviewText(e.target.value)} />
+                                <Button size='sm' ml={4} fontWeight={600} isLoading={loading} onClick={submitReview} >Submit</Button>
                             </Box>
                         </Box>
                         <Box mt={8}>

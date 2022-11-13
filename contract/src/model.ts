@@ -1,15 +1,14 @@
-export const POINT_ONE = '100000000000000000000000';
-
-export class PostedMessage {
-    text: string;
-    rating: number;
+export class PostedReview {
+    //   premium: boolean;
     id: string;
+    text: string;
+    rate: number;
     date: string;
 
-    constructor({ id, date, rating, text }: PostedMessage) {
-        this.rating = rating;
+    constructor({ id, text, rate, date }: PostedReview) {
         this.id = id;
         this.text = text;
+        this.rate = rate;
         this.date = date;
     }
 }

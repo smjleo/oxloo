@@ -86,7 +86,7 @@ export default function App({ isSignedIn, contractId, wallet }) {
 
     return (
         <>
-            <ReviewDialog toilet={allToilets[index]} isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
+            <ReviewDialog toilet={allToilets[index]} isOpen={isOpen} onOpen={onOpen} onClose={onClose} wallet={wallet} contractId={contractId} />
             <Navbar signOut = {() => wallet.signOut()} accountId={wallet.accountId} />
             <Box>
                 <SlideFade in>
