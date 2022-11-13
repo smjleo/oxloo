@@ -67,7 +67,7 @@ export default function App({ isSignedIn, contractId, wallet }) {
     async function updateRating() {
         let newRating = [];
         for (let toilet of allToilets) {
-            const rating = await wallet.viewMethod({ method: 'get_average_rating', args: { id: toilet.id }, contractId });
+            const rating = await wallet.viewMethod({ method: 'get_average_rating', contractId , args: { id: toilet.id }});
             console.log(rating);
             newRating.push(rating);
         }

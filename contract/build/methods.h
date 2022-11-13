@@ -1,4 +1,0 @@
-DEFINE_NEAR_METHOD(add_review)
-DEFINE_NEAR_METHOD(get_average_rating)
-DEFINE_NEAR_METHOD(get_reviews)
-DEFINE_NEAR_METHOD(get_reviews_by_id)

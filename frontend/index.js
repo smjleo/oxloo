@@ -26,9 +26,11 @@ const useStyles = makeStyles((theme) => {
 
 // Setup on page load
 window.onload = async () => {
-  const isSignedIn = await wallet.startUp()
+  const isSignedIn = await wallet.startUp();
  
   const root = ReactDOM.createRoot(document.getElementById('root'));
+
+  console.log(CONTRACT_ADDRESS);
 
   root.render(
     <ThemeProvider theme={theme}>
