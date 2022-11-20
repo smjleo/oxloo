@@ -1,7 +1,7 @@
 <h1 align="center">oxloo</h3>
 <h4 align="center">Democratising Oxford's toilets using Web3.</h3>
 
-Built for [Oxford Hack 2022](https://oxfordhack22.co.uk/).
+Built for [Oxford Hack 2022](https://oxfordhack22.co.uk/) (NEAR Challenge winner).
 [Devpost Link](https://devpost.com/software/oxloo)
 
 - [Inspiration](https://github.com/smjleo/oxloo#inspiration)
